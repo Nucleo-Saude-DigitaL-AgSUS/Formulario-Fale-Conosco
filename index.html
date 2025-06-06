@@ -121,7 +121,8 @@
 <header>FALE CONOSCO</header>
 
 <!--FormSpree-->
-<form id="faleConoscoForm" method="POST" action="#">
+<form action="https://script.google.com/macros/s/AKfycbzEJRU3DAuicafLlBsv7Y7xkPJTGoKPQSjacEm4AP2Y_JPqrsGkRTSUa53GIkfyGjs/exec" method="POST">
+
   <h2>FORMULÁRIO ELETRÔNICO</h2>
 
   <p><strong>Obs:</strong> <span style="color:red">*</span> Campo obrigatório. Para facilitar seu atendimento, selecione o seu perfil.</p>
@@ -210,7 +211,7 @@ fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome'
     const estadoSelect = document.getElementById('estado');
     estados.forEach(estado => {
       const opt = document.createElement('option');
-      opt.value = estado.id; // ID necessário pro IBGE
+      opt.value = estado.id; 
       opt.textContent = estado.nome;
       opt.setAttribute('data-nome', estado.nome);
       estadoSelect.appendChild(opt);
@@ -252,13 +253,14 @@ fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome'
   }
 </script>
 <script>
-  document.querySelector('form').addEventListener('submit', async function (e) {
+   document.querySelector('form').addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const form = e.target;
-    const formData = new FormData(form);
-    const file = formData.get('arquivo');
+    const formData = new FormData(form); 
 
+    
+    const file = formData.get('arquivo');
     let arquivoBase64 = '';
     let nomeArquivo = '';
     let tipoMime = '';
@@ -276,38 +278,35 @@ fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome'
       });
       reader.readAsDataURL(file);
       await fileLoaded;
+
+      formData.set('arquivo', arquivoBase64); 
+      formData.set('nomeArquivo', nomeArquivo);
+      formData.set('tipoMime', tipoMime);
+    } else {
+      
+      formData.set('arquivo', '');
+      formData.set('nomeArquivo', '');
+      formData.set('tipoMime', '');
     }
 
-    const jsonData = {
-      perfil: formData.get("perfil"),
-      nome: formData.get("nome"),
-      cpf: formData.get("cpf"),
-      email: formData.get("email"),
-      telefone: formData.get("telefone"),
-      estado: document.querySelector('#estado option:checked').getAttribute('data-nome'),
-      municipio: formData.get("municipio"),
-      assuntos: formData.get("assuntos"),
-      mensagem: formData.get("mensagem"),
-      arquivo: arquivoBase64,
-      nomeArquivo: nomeArquivo,
-      tipoMime: tipoMime
-    };
+    
+    const estadoSelect = document.getElementById('estado');
+    const estadoNome = estadoSelect.options[estadoSelect.selectedIndex].getAttribute('data-nome');
+    formData.set('estado', estadoNome);
+
 
     fetch('https://script.google.com/macros/s/AKfycbzEJRU3DAuicafLlBsv7Y7xkPJTGoKPQSjacEm4AP2Y_JPqrsGkRTSUa53GIkfyGjs/exec', {
       method: 'POST',
-      body: JSON.stringify(jsonData),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      body: formData 
     })
-    .then(res => res.text())
-    .then(res => {
-      alert('Formulário enviado com sucesso!');
-      form.reset();
-    })
-    .catch(err => {
-      alert('Erro ao enviar: ' + err.message);
-    });
+      .then(res => res.text())
+      .then(res => {
+        alert('Formulário enviado com sucesso!');
+        form.reset();
+      })
+      .catch(err => {
+        alert('Erro ao enviar: ' + err.message);
+      });
   });
 </script>
 </body>
