@@ -121,7 +121,7 @@
 <header>FALE CONOSCO</header>
 
 <!--FormSpree-->
-<form action="https://formspree.io/f/xanolqnd" method="POST" enctype="multipart/form-data">
+<form id="faleConoscoForm" method="POST" action="#">
   <h2>FORMULÁRIO ELETRÔNICO</h2>
 
   <p><strong>Obs:</strong> <span style="color:red">*</span> Campo obrigatório. Para facilitar seu atendimento, selecione o seu perfil.</p>
@@ -204,35 +204,36 @@
 </footer>
 
 <script>
-  fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
-    .then(res => res.json())
-    .then(estados => {
-      const estadoSelect = document.getElementById('estado');
-      estados.forEach(estado => {
-        const opt = document.createElement('option');
-        opt.value = estado.id;
-        opt.textContent = estado.nome;
-        estadoSelect.appendChild(opt);
-      });
+fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
+  .then(res => res.json())
+  .then(estados => {
+    const estadoSelect = document.getElementById('estado');
+    estados.forEach(estado => {
+      const opt = document.createElement('option');
+      opt.value = estado.id; // ID necessário pro IBGE
+      opt.textContent = estado.nome;
+      opt.setAttribute('data-nome', estado.nome);
+      estadoSelect.appendChild(opt);
     });
+  });
 
   document.getElementById('estado').addEventListener('change', function () {
-    const estadoId = this.value;
-    const municipioSelect = document.getElementById('municipio');
-    municipioSelect.innerHTML = '<option>Carregando...</option>';
+  const estadoId = this.value;
+  const municipioSelect = document.getElementById('municipio');
+  municipioSelect.innerHTML = '<option>Carregando...</option>';
 
-    fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`)
-      .then(res => res.json())
-      .then(municipios => {
-        municipioSelect.innerHTML = '<option value="">Escolha sua cidade</option>';
-        municipios.forEach(municipio => {
-          const opt = document.createElement('option');
-          opt.value = municipio.nome;
-          opt.textContent = municipio.nome;
-          municipioSelect.appendChild(opt);
-        });
+  fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`)
+    .then(res => res.json())
+    .then(municipios => {
+      municipioSelect.innerHTML = '<option value="">Escolha sua cidade</option>';
+      municipios.forEach(municipio => {
+        const opt = document.createElement('option');
+        opt.value = municipio.nome;
+        opt.textContent = municipio.nome;
+        municipioSelect.appendChild(opt);
       });
-  });
+    });
+});
 
   function formatarCPF(cpf) {
     let valor = cpf.value.replace(/\D/g, '');
@@ -250,6 +251,64 @@
     telefone.value = valor;
   }
 </script>
+<script>
+  document.querySelector('form').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
+    const form = e.target;
+    const formData = new FormData(form);
+    const file = formData.get('arquivo');
+
+    let arquivoBase64 = '';
+    let nomeArquivo = '';
+    let tipoMime = '';
+
+    if (file && file.size > 0) {
+      const reader = new FileReader();
+      const fileLoaded = new Promise(resolve => {
+        reader.onload = () => {
+          const base64 = reader.result.split(',')[1];
+          arquivoBase64 = base64;
+          nomeArquivo = file.name;
+          tipoMime = file.type;
+          resolve();
+        };
+      });
+      reader.readAsDataURL(file);
+      await fileLoaded;
+    }
+
+    const jsonData = {
+      perfil: formData.get("perfil"),
+      nome: formData.get("nome"),
+      cpf: formData.get("cpf"),
+      email: formData.get("email"),
+      telefone: formData.get("telefone"),
+      estado: document.querySelector('#estado option:checked').getAttribute('data-nome'),
+      municipio: formData.get("municipio"),
+      assuntos: formData.get("assuntos"),
+      mensagem: formData.get("mensagem"),
+      arquivo: arquivoBase64,
+      nomeArquivo: nomeArquivo,
+      tipoMime: tipoMime
+    };
+
+    fetch('https://script.google.com/macros/s/AKfycbzEJRU3DAuicafLlBsv7Y7xkPJTGoKPQSjacEm4AP2Y_JPqrsGkRTSUa53GIkfyGjs/exec', {
+      method: 'POST',
+      body: JSON.stringify(jsonData),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(res => res.text())
+    .then(res => {
+      alert('Formulário enviado com sucesso!');
+      form.reset();
+    })
+    .catch(err => {
+      alert('Erro ao enviar: ' + err.message);
+    });
+  });
+</script>
 </body>
 </html>
