@@ -15,7 +15,8 @@ header {
 }
 
 .logoBranca{
-    width: 15%;
+    width: 200px;
+  max-width: 40%;
 }
 
 .barra {
@@ -110,6 +111,15 @@ textarea {
 input:focus, select:focus, textarea:focus {
   border-color: #263691;
   outline: none;
+    box-shadow: 0 0 5px rgba(38, 54, 145, 0.3);
+}
+
+input:valid {
+  border-color: #00aa94;
+}
+
+input:invalid {
+  border-color: #ff6b6b;
 }
 
 textarea {
@@ -126,6 +136,11 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   padding-right: 2rem; 
+}
+
+select:hover {
+  border-color: #263691;
+  cursor: pointer;
 }
 
 .nome-arquivo {
@@ -170,10 +185,12 @@ select {
     cursor: pointer;
     display: block;
     margin: 0 auto;
+     transition: background-color 0.3s, transform 0.2s;
 }
 
 .submit-btn:hover {
   background: linear-gradient(90deg, #007f70, #005f50);
+  transform: scale(1.03);
 }
 
 footer {

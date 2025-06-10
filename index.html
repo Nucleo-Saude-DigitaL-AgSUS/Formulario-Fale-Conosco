@@ -10,29 +10,24 @@
 
 <body>
   <header>
-    <div style="height: 1rem; background: linear-gradient(to right, yellow, red, blue, green );"></div>  
+    <div> <img src="imagens/barra.png" class="barra" alt="barra"> </div>  
     <img src="imagens/logo-adaps-text-white.png" class="logoBranca" alt="logo">
-      <h1>FALE CONOSCO</h1>
+    <h1>FALE CONOSCO</h1>
   </header>
 
-  <!--FormSpree-->
   <form action="https://script.google.com/macros/s/AKfycbzEJRU3DAuicafLlBsv7Y7xkPJTGoKPQSjacEm4AP2Y_JPqrsGkRTSUa53GIkfyGjs/exec" method="POST">
-
     <h2>FORMULÁRIO ELETRÔNICO</h2>
-
     <p><strong>Obs:</strong> <span style="color:red">*</span> Campo obrigatório. Para facilitar seu atendimento, selecione o seu perfil.</p>
-
     <div class="perfil-group">
       <label class="perfil-option"><input type="radio" name="perfil" value="gestor" required> Gestor(a) Municipal</label>
       <label class="perfil-option"><input type="radio" name="perfil" value="bolsista"> Médico de Programa de Provimento vinculado à AgSUS</label>
       <label class="perfil-option"><input type="radio" name="perfil" value="tutor"> Trabalhador da Saúde Indígena</label>
       <label class="perfil-option"><input type="radio" name="perfil" value="outros"> Outros</label>
     </div>
-
     <div class="form-row">
       <div class="form-group">
         <label for="nome">* Nome Completo</label>
-        <input type="text" id="nome" name="nome" required>
+        <input type="text" id="nome" name="nome" required autofocus>
       </div>
       <div class="form-group">
         <label for="cpf">* CPF</label>
@@ -70,13 +65,15 @@
     <div class="form-group">
       <label for="assuntos">Assunto</label>
       <select id="assuntos" name="assuntos" required>
+        <option value="acolhedora">AgSUS Acolhedora</option>
         <option value="educacao">Articulação com gestores</option>
         <option value="saude">Formação, Ensino e Pesquisa</option>
         <option value="helpdesk">Help Desk</option>
         <option value="logistica">Logística</option>
         <option value="rh">Recursos humanos/ Rotinas de Trabalho</option>
+        <option value="digital">Saúde Digital</option>
         <option value="indigena">Saúde Indígena</option>
-        <option value="acolhedora">AgSUS Acolhedora</option>
+        <option value="outros">Outros Assuntos</option>
       </select>
     </div>
   </div>
@@ -100,11 +97,10 @@
   </form>
 
   <footer>
-    <div style="height: 0.6rem; background: linear-gradient(to right, yellow, red, blue, green );"></div>
     Todos os direitos reservados - AGSUS ©2025 Copyright
   </footer>
 
-  <!--IBGE-->
+  <!--IBGE e CPF-->
   <script>
   fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
     .then(res => res.json())
@@ -155,7 +151,7 @@
   </script>
 
   <!--google sheets APPS SCRIPT-->
-
+  <!--
   <script>
     document.querySelector('form').addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -204,7 +200,7 @@
           alert('Erro ao enviar: ' + err.message);
         });
     });
-  </script>
+  </script> -->
 
 
   <!-- MUDA O NOME DO ARQUIVO ANEXADO -->
